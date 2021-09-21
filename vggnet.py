@@ -128,5 +128,20 @@ def build_model(width, height, depth, classes):
     return model
 
 
+def draw_figure(history, epoch):
+    n = np.arange(0, epoch)
+    plt.style.use('ggplot')
+    plt.figure()
+    plt.plot(n, history.history['loss'], label='train_loss')
+    plt.plot(n, history.history['val_loss'], label='val_loss')
+    plt.plot(n, history.history['accuracy'], label='train_acc')
+    plt.plot(n, history.history['val_accuracy'], label='val_acc')
+    plt.title('training loss and accuracy')
+    plt.xlabel('epoch')
+    plt.ylabel('loss/accuracy')
+    plt.legend()
+    plt.savefig('image/loss-accuracy-vgg.png')
+
+
 if __name__ == '__main__':
     read_image_set(data, labels, 'dataset', 32)
