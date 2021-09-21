@@ -1,6 +1,7 @@
 from keras.models import Sequential
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
 from keras.layers import Dense, Dropout, Conv2D, Activation, MaxPooling2D, Flatten, BatchNormalization
 import keras.losses
 from keras import optimizers
@@ -13,6 +14,11 @@ import os
 
 data = []
 labels = []
+
+# 初始化参数
+INIT_LR = 0.001  # 学习率
+EPOCH = 600  # 训练轮次
+BITCH_SIZE = 30
 
 
 def read_image_set(dataset, label, catalogue, random_state, size=64):
@@ -44,6 +50,13 @@ def read_image_set(dataset, label, catalogue, random_state, size=64):
 
 
 def build_model(width, height, depth, classes):
+    """
+    :param width:
+    :param height:
+    :param depth:
+    :param classes:
+    :return:
+    """
     model = Sequential()
     input_shape = (height, width, depth)
     dim = -1
@@ -128,14 +141,19 @@ def build_model(width, height, depth, classes):
     return model
 
 
-def draw_figure(history, epoch):
+def draw_figure(his, epoch):
+    """
+    :param his:
+    :param epoch:
+    :return:
+    """
     n = np.arange(0, epoch)
     plt.style.use('ggplot')
     plt.figure()
-    plt.plot(n, history.history['loss'], label='train_loss')
-    plt.plot(n, history.history['val_loss'], label='val_loss')
-    plt.plot(n, history.history['accuracy'], label='train_acc')
-    plt.plot(n, history.history['val_accuracy'], label='val_acc')
+    plt.plot(n, his.history['loss'], label='train_loss')
+    plt.plot(n, his.history['val_loss'], label='val_loss')
+    plt.plot(n, his.history['accuracy'], label='train_acc')
+    plt.plot(n, his.history['val_accuracy'], label='val_acc')
     plt.title('training loss and accuracy')
     plt.xlabel('epoch')
     plt.ylabel('loss/accuracy')
@@ -143,5 +161,41 @@ def draw_figure(history, epoch):
     plt.savefig('image/loss-accuracy-vgg.png')
 
 
+def train_model(models, train_set_x, test_set_x, train_set_y, test_set_y, epoch, bitch):
+    print('[INFO]开始训练模型...')
+    opt = optimizers.gradient_descent_v2.SGD(lr=INIT_LR, decay=INIT_LR / epoch)
+    models.compile(loss=keras.losses.categorical_crossentropy, optimizer=opt, metrics=['accuracy'])
+
+    # 训练结果
+    h = models.fit(train_set_x, train_set_y, validation_data=(test_set_x, test_set_y), epochs=epoch, batch_size=bitch)
+    print('[INFO]正在评估模型...')
+    predictions = models.predict(test_set_x, batch_size=bitch)
+    print(classification_report(test_set_y.argmax(axis=1),
+                                predictions.argmax(axis=1),
+                                target_names=lb.classes_))
+    return h
+
+
+def save(models, label, model_name, label_name):
+    print('[INFO]保存模型...')
+    models.save(model_name)
+    f = open(label_name, 'wb')
+    f.write(pickle.dumps(label))
+    f.close()
+
+
 if __name__ == '__main__':
-    read_image_set(data, labels, 'dataset', 32)
+    read_image_set(data, labels, 'dataset', 32, 64)
+    data = np.array(data, dtype='float') / 255.0
+    labels = np.array(labels)
+    # random_state 与 read_image_set 中一致
+    (train_x, test_x, train_y, test_y) = train_test_split(data, labels, test_size=0.25, random_state=32)
+
+    lb = LabelBinarizer()
+    train_y = lb.fit_transform(train_y)
+    test_y = lb.transform(test_y)
+
+    model = build_model(width=64, height=64, depth=3, classes=len(lb.classes_))
+    history = train_model(model, train_x, test_x, train_y, test_y, EPOCH, BITCH_SIZE)
+    draw_figure(history, EPOCH)
+    save(model, lb, 'model/number_model', 'label/lb_bgg.pickle')
