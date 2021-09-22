@@ -17,7 +17,7 @@ labels = []
 
 # 初始化参数
 INIT_LR = 0.001  # 学习率
-EPOCH = 100  # 训练轮次
+EPOCH = 600  # 训练轮次
 BITCH_SIZE = 30
 
 
@@ -68,65 +68,65 @@ def build_model(width, height, depth, classes):
     model.add(Conv2D(64, (3, 3), padding='same',
                      input_shape=input_shape))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(64, (3, 3), padding='same',
                      input_shape=input_shape))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
     # (CONV => RELU) * 2 => POOL
     model.add(Conv2D(128, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(128, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
     # (CONV => RELU) * 4 => POOL
     model.add(Conv2D(256, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(256, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(256, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(256, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
     # (CONV => RELU) * 4 => POOL
     model.add(Conv2D(512, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(512, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(512, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(512, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
     # (CONV => RELU) * 4 => POOL
     model.add(Conv2D(512, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(512, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(512, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(Conv2D(512, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    # model.add(BatchNormalization(axis=chan_dim))
+    model.add(BatchNormalization(axis=dim))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
     # FC 层
